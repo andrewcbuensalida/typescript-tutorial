@@ -21,9 +21,8 @@ async function getTransactions() {
 	console.log(`Fetching transactions`);
 
 	const resultJSON: Response = await fetch("/api/v1");
-	const { transactions } = await resultJSON.json();
-	console.log(`This is result`);
-	console.log(transactions);
+	const { transactions }: { transactions: transaction[] } =
+		await resultJSON.json();
 	transactions.forEach((transaction: transaction) => {
 		console.log(`This is transaction`);
 		console.log(transaction);

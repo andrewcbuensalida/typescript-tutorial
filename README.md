@@ -5,4 +5,4 @@ workflow: go into client folder, tsc -w so that typescript auto converts .ts fil
 
 to connect to dynamodb https://www.youtube.com/watch?v=QLkkexbQ0qs
 
-to connect, have to have aws cli, and have to know the public and private key to the IAM user. 
+to connect, have to be logged into aws cli, and have to know the public and private key to the IAM user. 

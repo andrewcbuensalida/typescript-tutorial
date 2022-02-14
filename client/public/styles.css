@@ -70,3 +70,8 @@ footer a{
   margin-top: 40px;
   font-size: 0.7em;
 }
+
+.topInvoice{
+  display: flex;
+  justify-content: space-between;
+}

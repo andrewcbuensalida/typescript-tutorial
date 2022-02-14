@@ -6,9 +6,15 @@ export class ListTemplate {
     // start|end means it could either be 'start' or 'end'
     render(item, heading, pos) {
         const li = document.createElement("li");
+        const top = document.createElement("div");
+        top.classList.add('topInvoice');
         const h4 = document.createElement("h4");
         h4.innerText = heading;
-        li.append(h4);
+        const h4Time = document.createElement("h4");
+        h4Time.innerText = item.timeStamp;
+        top.append(h4);
+        top.append(h4Time);
+        li.append(top);
         const p = document.createElement("p");
         p.innerText = item.format();
         li.append(p);

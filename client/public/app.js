@@ -18,8 +18,6 @@ function getTransactions() {
         console.log(`Fetching transactions`);
         const resultJSON = yield fetch("/api/v1");
         const { transactions } = yield resultJSON.json();
-        console.log(`This is result`);
-        console.log(transactions);
         transactions.forEach((transaction) => {
             console.log(`This is transaction`);
             console.log(transaction);
