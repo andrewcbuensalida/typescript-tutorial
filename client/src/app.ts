@@ -11,10 +11,17 @@ const form = document.querySelector(".new-item-form") as HTMLFormElement;
 form.addEventListener("submit", async (e: Event) => {
 	e.preventDefault();
 
-	const type = document.querySelector("#type") as HTMLSelectElement;
-	const tofrom = document.querySelector("#tofrom") as HTMLInputElement;
-	const details = document.querySelector("#details") as HTMLInputElement;
-	const amount = document.querySelector("#amount") as HTMLInputElement;
+	const { value: type }: { value: string } = document.querySelector(
+		"#type"
+	) as HTMLSelectElement;
+	const { value: tofrom }: { value: string } = document.querySelector(
+		"#tofrom"
+	) as HTMLInputElement;
+	const { value: details }: { value: string } = document.querySelector(
+		"#details"
+	) as HTMLInputElement;
+	const { valueAsNumber: amount }: { valueAsNumber: number } =
+		document.querySelector("#amount") as HTMLInputElement;
 
 	await fetch("/api/v1", {
 		method: "POST",
@@ -26,22 +33,14 @@ form.addEventListener("submit", async (e: Event) => {
 		},
 		// redirect: "follow",
 		// referrerPolicy: "no-referrer",
-		body: JSON.stringify({ x: "hello there", y: "coool" }),
+		body: JSON.stringify({ type, tofrom, details, amount }),
 	});
 
-	if (type.value === "invoice") {
-		const invoice: HasFormatter = new Invoice(
-			tofrom.value,
-			details.value,
-			amount.valueAsNumber
-		);
-		list.render(invoice, type.value, "end");
+	if (type === "invoice") {
+		const invoice: HasFormatter = new Invoice(tofrom, details, amount);
+		list.render(invoice, type, "end");
 	} else {
-		const payment: HasFormatter = new Payment(
-			tofrom.value,
-			details.value,
-			amount.valueAsNumber
-		);
-		list.render(payment, type.value, "end");
+		const payment: HasFormatter = new Payment(tofrom, details, amount);
+		list.render(payment, type, "end");
 	}
 });

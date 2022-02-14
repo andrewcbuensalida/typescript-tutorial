@@ -15,10 +15,10 @@ const list = new ListTemplate(ul);
 const form = document.querySelector(".new-item-form");
 form.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, function* () {
     e.preventDefault();
-    const type = document.querySelector("#type");
-    const tofrom = document.querySelector("#tofrom");
-    const details = document.querySelector("#details");
-    const amount = document.querySelector("#amount");
+    const { value: type } = document.querySelector("#type");
+    const { value: tofrom } = document.querySelector("#tofrom");
+    const { value: details } = document.querySelector("#details");
+    const { valueAsNumber: amount } = document.querySelector("#amount");
     yield fetch("/api/v1", {
         method: "POST",
         // mode: "cors", // no-cors, *cors, same-origin
@@ -29,14 +29,14 @@ form.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, functio
         },
         // redirect: "follow",
         // referrerPolicy: "no-referrer",
-        body: JSON.stringify({ x: "hello there", y: "coool" }),
+        body: JSON.stringify({ type, tofrom, details, amount }),
     });
-    if (type.value === "invoice") {
-        const invoice = new Invoice(tofrom.value, details.value, amount.valueAsNumber);
-        list.render(invoice, type.value, "end");
+    if (type === "invoice") {
+        const invoice = new Invoice(tofrom, details, amount);
+        list.render(invoice, type, "end");
     }
     else {
-        const payment = new Payment(tofrom.value, details.value, amount.valueAsNumber);
-        list.render(payment, type.value, "end");
+        const payment = new Payment(tofrom, details, amount);
+        list.render(payment, type, "end");
     }
 }));
