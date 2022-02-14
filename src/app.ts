@@ -22,7 +22,7 @@ form.addEventListener("submit", (e:Event) => {
 			details.value,
 			amount.valueAsNumber
 		);
-		list.render(invoice, "something", "end");
+		list.render(invoice, type.value, "end");
 	} else {
 		const payment:HasFormatter = new Payment(
 			tofrom.value,

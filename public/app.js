@@ -12,7 +12,7 @@ form.addEventListener("submit", (e) => {
     const amount = document.querySelector("#amount");
     if (type.value === "invoice") {
         const invoice = new Invoice(tofrom.value, details.value, amount.valueAsNumber);
-        list.render(invoice, "something", "end");
+        list.render(invoice, type.value, "end");
     }
     else {
         const payment = new Payment(tofrom.value, details.value, amount.valueAsNumber);
