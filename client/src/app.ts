@@ -8,6 +8,32 @@ const list = new ListTemplate(ul);
 
 const form = document.querySelector(".new-item-form") as HTMLFormElement;
 
+interface transaction {
+	amount: { N: number };
+	tofrom: { S: string };
+	details: { S: string };
+	myPartitionKey: { S: string };
+	type: { S: string };
+	timeStamp: { S: string };
+}
+
+async function getTransactions() {
+	console.log(`Fetching transactions`);
+
+	const resultJSON: Response = await fetch("/api/v1");
+	const { transactions } = await resultJSON.json();
+	console.log(`This is result`);
+	console.log(transactions);
+	transactions.forEach((transaction: transaction) => {
+		console.log(`This is transaction`);
+		console.log(transaction);
+
+		const { type, tofrom, details, amount, timeStamp } = transaction;
+		addTransaction(type.S, tofrom.S, details.S, amount.N, timeStamp.S);
+	});
+}
+getTransactions();
+
 form.addEventListener("submit", async (e: Event) => {
 	e.preventDefault();
 
@@ -22,8 +48,9 @@ form.addEventListener("submit", async (e: Event) => {
 	) as HTMLInputElement;
 	const { valueAsNumber: amount }: { valueAsNumber: number } =
 		document.querySelector("#amount") as HTMLInputElement;
+	const timeStamp = new Date().toISOString();
 
-	await fetch("/api/v1", {
+	const resultJSON = await fetch("/api/v1", {
 		method: "POST",
 		// mode: "cors", // no-cors, *cors, same-origin
 		// cache: "no-cache",
@@ -33,14 +60,42 @@ form.addEventListener("submit", async (e: Event) => {
 		},
 		// redirect: "follow",
 		// referrerPolicy: "no-referrer",
-		body: JSON.stringify({ type, tofrom, details, amount }),
+		body: JSON.stringify({ type, tofrom, details, amount, timeStamp }),
 	});
+	const result = await resultJSON.json();
+	console.log(`This is result`);
+	console.log(result);
 
-	if (type === "invoice") {
-		const invoice: HasFormatter = new Invoice(tofrom, details, amount);
-		list.render(invoice, type, "end");
-	} else {
-		const payment: HasFormatter = new Payment(tofrom, details, amount);
-		list.render(payment, type, "end");
+	const messageDiv = document.querySelector("#message") as HTMLDivElement;
+	messageDiv.innerText = result.message;
+
+	if (result.ok) {
+		addTransaction(type, tofrom, details, amount, timeStamp);
 	}
 });
+
+function addTransaction(
+	type: string,
+	tofrom: string,
+	details: string,
+	amount: number,
+	timeStamp: string
+) {
+	if (type === "invoice") {
+		const invoice: HasFormatter = new Invoice(
+			tofrom,
+			details,
+			amount,
+			timeStamp
+		);
+		list.render(invoice, type, "end");
+	} else {
+		const payment: HasFormatter = new Payment(
+			tofrom,
+			details,
+			amount,
+			timeStamp
+		);
+		list.render(payment, type, "end");
+	}
+}

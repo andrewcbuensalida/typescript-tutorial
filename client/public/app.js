@@ -13,13 +13,30 @@ import { ListTemplate } from "./classes/ListTemplate.js";
 const ul = document.querySelector(".item-list");
 const list = new ListTemplate(ul);
 const form = document.querySelector(".new-item-form");
+function getTransactions() {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log(`Fetching transactions`);
+        const resultJSON = yield fetch("/api/v1");
+        const { transactions } = yield resultJSON.json();
+        console.log(`This is result`);
+        console.log(transactions);
+        transactions.forEach((transaction) => {
+            console.log(`This is transaction`);
+            console.log(transaction);
+            const { type, tofrom, details, amount, timeStamp } = transaction;
+            addTransaction(type.S, tofrom.S, details.S, amount.N, timeStamp.S);
+        });
+    });
+}
+getTransactions();
 form.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, function* () {
     e.preventDefault();
     const { value: type } = document.querySelector("#type");
     const { value: tofrom } = document.querySelector("#tofrom");
     const { value: details } = document.querySelector("#details");
     const { valueAsNumber: amount } = document.querySelector("#amount");
-    yield fetch("/api/v1", {
+    const timeStamp = new Date().toISOString();
+    const resultJSON = yield fetch("/api/v1", {
         method: "POST",
         // mode: "cors", // no-cors, *cors, same-origin
         // cache: "no-cache",
@@ -29,14 +46,24 @@ form.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, functio
         },
         // redirect: "follow",
         // referrerPolicy: "no-referrer",
-        body: JSON.stringify({ type, tofrom, details, amount }),
+        body: JSON.stringify({ type, tofrom, details, amount, timeStamp }),
     });
+    const result = yield resultJSON.json();
+    console.log(`This is result`);
+    console.log(result);
+    const messageDiv = document.querySelector("#message");
+    messageDiv.innerText = result.message;
+    if (result.ok) {
+        addTransaction(type, tofrom, details, amount, timeStamp);
+    }
+}));
+function addTransaction(type, tofrom, details, amount, timeStamp) {
     if (type === "invoice") {
-        const invoice = new Invoice(tofrom, details, amount);
+        const invoice = new Invoice(tofrom, details, amount, timeStamp);
         list.render(invoice, type, "end");
     }
     else {
-        const payment = new Payment(tofrom, details, amount);
+        const payment = new Payment(tofrom, details, amount, timeStamp);
         list.render(payment, type, "end");
     }
-}));
+}
