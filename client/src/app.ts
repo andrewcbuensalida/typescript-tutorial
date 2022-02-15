@@ -24,9 +24,6 @@ async function getTransactions() {
 	const { transactions }: { transactions: transaction[] } =
 		await resultJSON.json();
 	transactions.forEach((transaction: transaction) => {
-		console.log(`This is transaction`);
-		console.log(transaction);
-
 		const { type, tofrom, details, amount, timeStamp } = transaction;
 		addTransaction(type.S, tofrom.S, details.S, amount.N, timeStamp.S);
 	});
@@ -98,3 +95,18 @@ function addTransaction(
 		list.render(payment, type, "end");
 	}
 }
+
+const saveUpdateBtn = document.querySelector(
+	"#saveUpdate"
+) as HTMLButtonElement;
+
+saveUpdateBtn.addEventListener("click", () => {
+	saveUpdateBtn.innerText = "Saving...";
+	const descriptionArea = document.querySelector(
+		"textarea"
+	) as HTMLTextAreaElement;
+	const description = descriptionArea.value;
+	console.log(description);
+	saveUpdateBtn.innerText = "Save changes";
+
+});

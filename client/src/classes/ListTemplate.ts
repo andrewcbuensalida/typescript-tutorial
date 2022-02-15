@@ -26,16 +26,29 @@ export class ListTemplate {
 
 		const bottom = document.createElement("div");
 		bottom.classList.add("bottomTransaction");
-		const p = document.createElement("p");
-		p.innerText = item.format();
+		const description = document.createElement("p");
+		description.innerText = item.format();
 		const bottomRight = document.createElement("div");
 		bottomRight.classList.add("bottomRightTransaction");
 		const updateBtn = document.createElement("button");
-		updateBtn.addEventListener("click", (e) => {
-			e.stopPropagation();
+		updateBtn.setAttribute("type", "button");
+		updateBtn.classList.add("btn", "btn-warning");
+		updateBtn.setAttribute("data-toggle", "modal");
+		updateBtn.setAttribute("data-target", "#exampleModalCenter");
 
+		updateBtn.addEventListener("click", (e) => {
+			// e.stopPropagation();
 			// modal to update description
-			console.log(`update`);
+			const modalTitle = document.getElementById(
+				"exampleModalLongTitle"
+			) as HTMLHeadingElement;
+			modalTitle.innerText = "Update";
+			const descriptionArea = document.createElement("textarea");
+			descriptionArea.value = item.format();
+			const modalBody = document.querySelector(
+				".modal-body"
+			) as HTMLDivElement;
+			modalBody.replaceChildren(descriptionArea);
 		});
 		updateBtn.innerText = "Update";
 		const deleteBtn = document.createElement("button");
@@ -46,7 +59,7 @@ export class ListTemplate {
 		});
 		deleteBtn.innerText = "Delete";
 		bottomRight.append(updateBtn, deleteBtn);
-		bottom.append(p, bottomRight);
+		bottom.append(description, bottomRight);
 		li.append(bottom);
 
 		if (pos === "start") {

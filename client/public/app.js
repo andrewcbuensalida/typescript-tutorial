@@ -19,8 +19,6 @@ function getTransactions() {
         const resultJSON = yield fetch("/api/v1");
         const { transactions } = yield resultJSON.json();
         transactions.forEach((transaction) => {
-            console.log(`This is transaction`);
-            console.log(transaction);
             const { type, tofrom, details, amount, timeStamp } = transaction;
             addTransaction(type.S, tofrom.S, details.S, amount.N, timeStamp.S);
         });
@@ -65,3 +63,11 @@ function addTransaction(type, tofrom, details, amount, timeStamp) {
         list.render(payment, type, "end");
     }
 }
+const saveUpdateBtn = document.querySelector("#saveUpdate");
+saveUpdateBtn.addEventListener("click", () => {
+    saveUpdateBtn.innerText = "Saving...";
+    const descriptionArea = document.querySelector("textarea");
+    const description = descriptionArea.value;
+    console.log(description);
+    saveUpdateBtn.innerText = "Save changes";
+});

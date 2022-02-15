@@ -93,5 +93,9 @@ footer a {
 }
 .bottomRightTransaction > button:active{
   filter: brightness(80%);
-  transform: scale(95%);
+  transform: scale(100%);
+}
+
+textarea{
+  width: 100%;
 }
