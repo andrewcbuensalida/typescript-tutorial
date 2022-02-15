@@ -7,6 +7,6 @@ export class Payment {
         this.myPartitionKey = myPartitionKey;
     }
     format() {
-        return `${this.recipient} paid $${this.amount} for ${this.details}`;
+        return `${this.recipient} paid ${this.amount} sol for ${this.details}`;
     }
 }

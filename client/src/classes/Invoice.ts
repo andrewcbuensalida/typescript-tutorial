@@ -11,7 +11,7 @@ export class Invoice implements HasFormatter {
 
 	// string isnt needed because typescript can infer return type from return statement
 	format(): string {
-		return `${this.client} owes $${this.amount} for ${this.details}`;
+		return `${this.client} owes ${this.amount} sol for ${this.details}`;
 	}
 }
 

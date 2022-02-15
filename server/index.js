@@ -78,6 +78,7 @@ app.put("/api/v1", (req, res) => {
 		ExpressionAttributeValues: {
 			":d": req.body.details,
 		},
+		ReturnValues: "ALL_NEW",
 	};
 
 	console.log("Updating the item...");
@@ -90,6 +91,28 @@ app.put("/api/v1", (req, res) => {
 			res.status(400).json({ ok: false });
 		} else {
 			console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+			res.status(200).json({ ok: true, item:data.Attributes });
+		}
+	});
+});
+
+app.delete("/api/v1", (req, res) => {
+	const params = {
+		TableName: "transactions",
+		Key: {
+			myPartitionKey: req.body.myPartitionKey,
+		},
+		ReturnValue: "",
+	};
+	docClient.delete(params, (err, data) => {
+		if (err) {
+			console.error(
+				"Unable to delete item. Error JSON:",
+				JSON.stringify(err, null, 2)
+			);
+			res.status(400).json({ ok: false });
+		} else {
+			console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
 			res.status(200).json({ ok: true });
 		}
 	});

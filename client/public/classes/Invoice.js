@@ -8,6 +8,6 @@ export class Invoice {
     }
     // string isnt needed because typescript can infer return type from return statement
     format() {
-        return `${this.client} owes $${this.amount} for ${this.details}`;
+        return `${this.client} owes ${this.amount} sol for ${this.details}`;
     }
 }

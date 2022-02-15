@@ -7,6 +7,7 @@ export class ListTemplate {
 	// start|end means it could either be 'start' or 'end'
 	render(item: HasFormatter, heading: string, pos: "start" | "end") {
 		const li = document.createElement("li");
+		li.setAttribute("data-mypartitionkey", item.myPartitionKey);
 		li.addEventListener("click", () => {
 			//modal to see transaction bigger
 			console.log(`Transaction clicked`);
@@ -26,8 +27,11 @@ export class ListTemplate {
 
 		const bottom = document.createElement("div");
 		bottom.classList.add("bottomTransaction");
-		const description = document.createElement("p");
-		description.innerText = item.format();
+		const fullDetails = document.createElement("p");
+
+		fullDetails.innerText = item.format();
+		fullDetails.setAttribute("data-mypartitionkey", item.myPartitionKey);
+		fullDetails.setAttribute("data-type", heading);
 		const bottomRight = document.createElement("div");
 		bottomRight.classList.add("bottomRightTransaction");
 		const updateBtn = document.createElement("button");
@@ -36,11 +40,14 @@ export class ListTemplate {
 		updateBtn.setAttribute("data-toggle", "modal");
 		updateBtn.setAttribute("data-target", "#exampleModalCenter");
 
+		const detailsArea = document.createElement("textarea");
+		const saveUpdateBtn = document.querySelector(
+			"#saveUpdate"
+		) as HTMLButtonElement;
+
 		updateBtn.addEventListener("click", (e) => {
 			// e.stopPropagation();
-			const saveUpdateBtn = document.querySelector(
-				"#saveUpdate"
-			) as HTMLButtonElement;
+
 			saveUpdateBtn.innerText = "Save changes";
 			saveUpdateBtn.setAttribute(
 				"data-mypartitionkey",
@@ -50,23 +57,41 @@ export class ListTemplate {
 				"exampleModalLongTitle"
 			) as HTMLHeadingElement;
 			modalTitle.innerText = "Update";
-			const descriptionArea = document.createElement("textarea");
-			descriptionArea.value = item.details;
+
+			detailsArea.value = item.details;
 			const modalBody = document.querySelector(
 				".modal-body"
 			) as HTMLDivElement;
-			modalBody.replaceChildren(descriptionArea);
+			modalBody.replaceChildren(detailsArea);
 		});
 		updateBtn.innerText = "Update";
 		const deleteBtn = document.createElement("button");
-		deleteBtn.addEventListener("click", (e) => {
+		deleteBtn.addEventListener("click", async (e) => {
 			e.stopPropagation();
 			// delete transaction
 			console.log(`delete`);
+			const responseJSON = await fetch("/api/v1", {
+				method: "DELETE",
+				// mode: "cors", // no-cors, *cors, same-origin
+				// cache: "no-cache",
+				// credentials: "same-origin",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				// redirect: "follow",
+				// referrerPolicy: "no-referrer",
+				body: JSON.stringify({
+					myPartitionKey: item.myPartitionKey,
+				}),
+			});
+			const response = await responseJSON.json();
+			if (response.ok) {
+				li.remove();
+			}
 		});
 		deleteBtn.innerText = "Delete";
 		bottomRight.append(updateBtn, deleteBtn);
-		bottom.append(description, bottomRight);
+		bottom.append(fullDetails, bottomRight);
 		li.append(bottom);
 
 		if (pos === "start") {

@@ -23,7 +23,7 @@ async function getTransactions() {
 	const resultJSON: Response = await fetch("/api/v1");
 	const { transactions }: { transactions: transaction[] } =
 		await resultJSON.json();
-		
+
 	transactions.forEach((transaction: transaction) => {
 		const { type, tofrom, details, amount, timeStamp, myPartitionKey } =
 			transaction;
@@ -122,7 +122,10 @@ saveUpdateBtn.addEventListener("click", async () => {
 	const detailsArea = document.querySelector(
 		"textarea"
 	) as HTMLTextAreaElement;
-	const details = detailsArea.value;
+	const myPartitionKey = saveUpdateBtn.getAttribute("data-mypartitionkey");
+	console.log(`This is myPartitionKey`);
+	console.log(myPartitionKey);
+
 	const responseJSON = await fetch("/api/v1", {
 		method: "PUT",
 		// mode: "cors", // no-cors, *cors, same-origin
@@ -134,14 +137,32 @@ saveUpdateBtn.addEventListener("click", async () => {
 		// redirect: "follow",
 		// referrerPolicy: "no-referrer",
 		body: JSON.stringify({
-			details,
-			myPartitionKey: saveUpdateBtn.getAttribute("data-mypartitionkey"),
+			details: detailsArea.value,
+			myPartitionKey: myPartitionKey,
 		}),
 	});
-	const response = await responseJSON.json()
+	const { ok, item } = await responseJSON.json();
+	console.log(`This is response`);
+	console.log(item);
+
 	//if successfully updated
-	if (response.ok) {
+	if (ok) {
+		const fullDetails = document.querySelector(
+			`[data-mypartitionkey='${myPartitionKey}'] p`
+		) as HTMLParagraphElement;
+
+		if (fullDetails.getAttribute("data-type") === "invoice") {
+			fullDetails.innerText = `${item.tofrom} owes ${item.amount} sol for ${item.details}`;
+		} else {
+			fullDetails.innerText = `${item.tofrom} paid ${item.amount} sol for ${item.details}`;
+		}
 		saveUpdateBtn.innerText = "Changes saved!";
+		setTimeout(() => {
+			const modalClose = document.querySelector(
+				".close"
+			) as HTMLDivElement;
+			modalClose.click();
+		}, 500);
 	} else {
 		saveUpdateBtn.innerText = "Try again";
 	}
