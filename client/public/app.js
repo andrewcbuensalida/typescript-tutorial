@@ -13,10 +13,19 @@ import { ListTemplate } from "./classes/ListTemplate.js";
 const ul = document.querySelector(".item-list");
 const list = new ListTemplate(ul);
 const form = document.querySelector(".new-item-form");
-function getTransactions() {
+function emptyTransactions() {
+    console.log(`Emptying transactions`);
+    const ul = document.querySelector(".item-list");
+    while (ul.firstChild) {
+        console.log(`heyooo`);
+        ul.removeChild(ul.lastChild);
+    }
+}
+function getTransactions(typeFilter) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(`Fetching transactions`);
-        const resultJSON = yield fetch("/api/v1");
+        emptyTransactions();
+        const resultJSON = yield fetch(`/api/v1/${typeFilter}`);
         const { transactions } = yield resultJSON.json();
         transactions.forEach((transaction) => {
             const { type, tofrom, details, amount, timeStamp, myPartitionKey } = transaction;
@@ -24,7 +33,7 @@ function getTransactions() {
         });
     });
 }
-getTransactions();
+getTransactions("all");
 form.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, function* () {
     e.preventDefault();
     const type = document.querySelector("#type");
@@ -48,6 +57,7 @@ form.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, functio
             details: details.value,
             amount: amount.value,
             timeStamp,
+            table: "transactions",
         }),
     });
     const result = yield resultJSON.json();
@@ -117,10 +127,5 @@ saveUpdateBtn.addEventListener("click", () => __awaiter(void 0, void 0, void 0, 
 }));
 const typeFilter = document.querySelector("#typeFilter");
 typeFilter.addEventListener("change", () => {
-    if (typeFilter.value === "all") {
-    }
-    else if (typeFilter.value === "invoice") {
-    }
-    else if (typeFilter.value === "invoice") {
-    }
+    getTransactions(typeFilter.value);
 });

@@ -6,3 +6,5 @@ workflow: go into client folder, tsc -w so that typescript auto converts .ts fil
 to connect to dynamodb https://www.youtube.com/watch?v=QLkkexbQ0qs
 
 to connect, have to be logged into aws cli, and have to know the public and private key to the IAM user. 
+
+dynamodb is stupid because you cant even sort a query unless you supply a partition key, which is an attribute you want to filter.

@@ -15,32 +15,40 @@ app.use(express.static("../client/public"));
 // needed so req.body wont be undefined
 app.use(express.json());
 
-app.get("/api/v1", (req, res) => {
+app.get("/api/v1/:type", (req, res) => {
+	console.log(`This is req.params`);
+	console.log(req.params);
+
 	console.log(`fetching transactions`);
-	const params = {
-		TableName: "transactions",
-		IndexName: "type-timeStamp-index",
-
-		// use this if using query instead of scan, this is required
-		// KeyConditionExpression: "#type = :type",
-		// ExpressionAttributeValues: {
-		// 	":type": "invoice",
-		// },
-		// ExpressionAttributeNames: { "#type": "type" },
-
-		// use this if using scan
-		// FilterExpression: "#type=:type",
-		// ExpressionAttributeNames: { "#type": "type" },
-		// ExpressionAttributeValues: {
-		// 	":type": "payment",
-		// },
-		
-		// ProjectionExpression: "timeStamp, type",
-		ScanIndexForward: false,
-	};
+	let params;
+	if (req.params.type === "all") {
+		params = {
+			TableName: "transactions",
+			IndexName: "table-timeStamp-index",
+			KeyConditionExpression: "#table = :table",
+			ExpressionAttributeNames: { "#table": "table" },
+			ExpressionAttributeValues: {
+				":table": "transactions",
+			},
+			ScanIndexForward: true,
+		};
+	} else {
+		params = {
+			TableName: "transactions",
+			IndexName: "table-timeStamp-index",
+			KeyConditionExpression: "#table = :table",
+			FilterExpression: "#type=:type",
+			ExpressionAttributeNames: { "#table": "table", "#type": "type" },
+			ExpressionAttributeValues: {
+				":table": "transactions",
+				":type": req.params.type,
+			},
+			ScanIndexForward: true,
+		};
+	}
 
 	// use query when looking for specific transactions, because it requires a partition key, which is the myPartitionKey which is unique to each transaction
-	docClient.scan(params, function (err, data) {
+	docClient.query(params, function (err, data) {
 		if (err) {
 			console.error(
 				"Unable to read item. Error JSON:",

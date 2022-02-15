@@ -17,10 +17,19 @@ interface transaction {
 	timeStamp: string;
 }
 
-async function getTransactions() {
-	console.log(`Fetching transactions`);
+function emptyTransactions() {
+	console.log(`Emptying transactions`);
+	const ul = document.querySelector(".item-list") as HTMLUListElement;
+	while (ul.firstChild) {
+		console.log(`heyooo`);
 
-	const resultJSON: Response = await fetch("/api/v1");
+		ul.removeChild(ul.lastChild as Node);
+	}
+}
+async function getTransactions(typeFilter: string) {
+	console.log(`Fetching transactions`);
+	emptyTransactions();
+	const resultJSON: Response = await fetch(`/api/v1/${typeFilter}`);
 	const { transactions }: { transactions: transaction[] } =
 		await resultJSON.json();
 
@@ -37,7 +46,7 @@ async function getTransactions() {
 		);
 	});
 }
-getTransactions();
+getTransactions("all");
 
 form.addEventListener("submit", async (e: Event) => {
 	e.preventDefault();
@@ -64,6 +73,7 @@ form.addEventListener("submit", async (e: Event) => {
 			details: details.value,
 			amount: amount.value,
 			timeStamp,
+			table: "transactions",
 		}),
 	});
 	const result = await resultJSON.json();
@@ -173,9 +183,5 @@ saveUpdateBtn.addEventListener("click", async () => {
 
 const typeFilter = document.querySelector("#typeFilter") as HTMLSelectElement;
 typeFilter.addEventListener("change", () => {
-	
-	if (typeFilter.value === "all") {
-	} else if (typeFilter.value === "invoice") {
-	} else if (typeFilter.value === "invoice") {
-	}
+	getTransactions(typeFilter.value);
 });
