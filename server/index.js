@@ -22,8 +22,6 @@ app.get("/api/v1", async (req, res) => {
 	};
 	const command = new ScanCommand(params);
 	const transactions = await client.send(command);
-	console.log(`This is transactions`);
-	console.log(transactions.Items);
 
 	res.status(200).json({ transactions: transactions.Items });
 });
