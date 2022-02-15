@@ -68,8 +68,6 @@ form.addEventListener("submit", async (e: Event) => {
 		body: JSON.stringify({ type, tofrom, details, amount, timeStamp }),
 	});
 	const result = await resultJSON.json();
-console.log(`This is result`)
-console.log(result)
 
 	const messageDiv = document.querySelector("#message") as HTMLDivElement;
 	messageDiv.innerText = result.message;
@@ -140,8 +138,9 @@ saveUpdateBtn.addEventListener("click", async () => {
 			myPartitionKey: saveUpdateBtn.getAttribute("data-mypartitionkey"),
 		}),
 	});
+	const response = await responseJSON.json()
 	//if successfully updated
-	if (true) {
+	if (response.ok) {
 		saveUpdateBtn.innerText = "Changes saved!";
 	} else {
 		saveUpdateBtn.innerText = "Try again";

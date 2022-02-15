@@ -68,28 +68,31 @@ app.post("/api/v1", (req, res) => {
 	});
 });
 
-app.put("/api/v1", async (req, res) => {
-	console.log(`This is req.body`);
-	console.log(req.body);
-
+app.put("/api/v1", (req, res) => {
 	const params = {
 		TableName: "transactions",
 		Key: {
-			myPartitionKey: { S: req.body.myPartitionKey },
+			myPartitionKey: req.body.myPartitionKey,
 		},
 		UpdateExpression: "set details = :d",
 		ExpressionAttributeValues: {
 			":d": req.body.details,
 		},
 	};
-	const command = new UpdateItemCommand(params);
-	try {
-		const responseJSON = await client.send(command);
-		res.status(200).json({ ok: true });
-	} catch (err) {
-		console.log(err);
-		res.status(400).json({ ok: false });
-	}
+
+	console.log("Updating the item...");
+	docClient.update(params, function (err, data) {
+		if (err) {
+			console.error(
+				"Unable to update item. Error JSON:",
+				JSON.stringify(err, null, 2)
+			);
+			res.status(400).json({ ok: false });
+		} else {
+			console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+			res.status(200).json({ ok: true });
+		}
+	});
 });
 
 app.listen(PORT, () => console.log(`Listening to port ${PORT}`));

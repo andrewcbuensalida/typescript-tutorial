@@ -51,7 +51,7 @@ export class ListTemplate {
 			) as HTMLHeadingElement;
 			modalTitle.innerText = "Update";
 			const descriptionArea = document.createElement("textarea");
-			descriptionArea.value = item.format();
+			descriptionArea.value = item.details;
 			const modalBody = document.querySelector(
 				".modal-body"
 			) as HTMLDivElement;

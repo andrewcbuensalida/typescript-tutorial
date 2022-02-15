@@ -45,8 +45,6 @@ form.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, functio
         body: JSON.stringify({ type, tofrom, details, amount, timeStamp }),
     });
     const result = yield resultJSON.json();
-    console.log(`This is result`);
-    console.log(result);
     const messageDiv = document.querySelector("#message");
     messageDiv.innerText = result.message;
     if (result.ok) {
@@ -83,8 +81,9 @@ saveUpdateBtn.addEventListener("click", () => __awaiter(void 0, void 0, void 0, 
             myPartitionKey: saveUpdateBtn.getAttribute("data-mypartitionkey"),
         }),
     });
+    const response = yield responseJSON.json();
     //if successfully updated
-    if (true) {
+    if (response.ok) {
         saveUpdateBtn.innerText = "Changes saved!";
     }
     else {

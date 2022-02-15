@@ -3,8 +3,8 @@ import { HasFormatter } from "../interfaces/HasFormatter";
 export class Invoice implements HasFormatter {
 	constructor(
 		readonly client: string,
-		private details: string,
-		public amount: number,
+		public details: string,
+		private amount: number,
 		public timeStamp: string,
 		public myPartitionKey: string
 	) {}
