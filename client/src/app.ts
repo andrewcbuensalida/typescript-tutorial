@@ -9,12 +9,12 @@ const list = new ListTemplate(ul);
 const form = document.querySelector(".new-item-form") as HTMLFormElement;
 
 interface transaction {
-	amount: { N: number };
-	tofrom: { S: string };
-	details: { S: string };
-	myPartitionKey: { S: string };
-	type: { S: string };
-	timeStamp: { S: string };
+	amount: number;
+	tofrom: string;
+	details: string;
+	myPartitionKey: string;
+	type: string;
+	timeStamp: string;
 }
 
 async function getTransactions() {
@@ -23,16 +23,17 @@ async function getTransactions() {
 	const resultJSON: Response = await fetch("/api/v1");
 	const { transactions }: { transactions: transaction[] } =
 		await resultJSON.json();
+		
 	transactions.forEach((transaction: transaction) => {
 		const { type, tofrom, details, amount, timeStamp, myPartitionKey } =
 			transaction;
 		addTransaction(
-			type.S,
-			tofrom.S,
-			details.S,
-			amount.N,
-			timeStamp.S,
-			myPartitionKey.S
+			type,
+			tofrom,
+			details,
+			amount,
+			timeStamp,
+			myPartitionKey
 		);
 	});
 }

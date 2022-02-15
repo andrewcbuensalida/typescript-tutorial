@@ -1,13 +1,12 @@
 const express = require("express");
 const uuidv4 = require("uuid");
-const {
-	DynamoDBClient,
-	ScanCommand,
-	PutItemCommand,
-	UpdateItemCommand,
-} = require("@aws-sdk/client-dynamodb");
+var AWS = require("aws-sdk");
 
-const client = new DynamoDBClient({ region: "us-west-1" });
+AWS.config.update({
+	region: "us-west-1",
+});
+
+var docClient = new AWS.DynamoDB.DocumentClient();
 
 const PORT = process.env.PORT || 3100;
 const app = express();
@@ -21,10 +20,21 @@ app.get("/api/v1", async (req, res) => {
 	const params = {
 		TableName: "transactions",
 	};
-	const command = new ScanCommand(params);
-	const transactions = await client.send(command);
 
-	res.status(200).json({ transactions: transactions.Items });
+	docClient.scan(params, function (err, data) {
+		if (err) {
+			console.error(
+				"Unable to read item. Error JSON:",
+				JSON.stringify(err, null, 2)
+			);
+		} else {
+			console.log("GetItem succeeded:", JSON.stringify(data, null, 2));
+			res.status(200).json({ transactions: data.Items });
+		}
+	});
+
+	// const command = new ScanCommand(params);
+	// const transactions = await client.send(command);
 });
 
 app.post("/api/v1", async (req, res) => {

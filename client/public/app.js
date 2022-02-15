@@ -20,7 +20,7 @@ function getTransactions() {
         const { transactions } = yield resultJSON.json();
         transactions.forEach((transaction) => {
             const { type, tofrom, details, amount, timeStamp, myPartitionKey } = transaction;
-            addTransaction(type.S, tofrom.S, details.S, amount.N, timeStamp.S, myPartitionKey.S);
+            addTransaction(type, tofrom, details, amount, timeStamp, myPartitionKey);
         });
     });
 }
