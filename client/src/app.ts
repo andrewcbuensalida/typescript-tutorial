@@ -42,17 +42,10 @@ getTransactions();
 form.addEventListener("submit", async (e: Event) => {
 	e.preventDefault();
 
-	const { value: type }: { value: string } = document.querySelector(
-		"#type"
-	) as HTMLSelectElement;
-	const { value: tofrom }: { value: string } = document.querySelector(
-		"#tofrom"
-	) as HTMLInputElement;
-	const { value: details }: { value: string } = document.querySelector(
-		"#details"
-	) as HTMLInputElement;
-	const { valueAsNumber: amount }: { valueAsNumber: number } =
-		document.querySelector("#amount") as HTMLInputElement;
+	const type = document.querySelector("#type") as HTMLSelectElement;
+	const tofrom = document.querySelector("#tofrom") as HTMLInputElement;
+	const details = document.querySelector("#details") as HTMLInputElement;
+	const amount = document.querySelector("#amount") as HTMLInputElement;
 	const timeStamp = new Date().toISOString();
 
 	const resultJSON = await fetch("/api/v1", {
@@ -65,7 +58,13 @@ form.addEventListener("submit", async (e: Event) => {
 		},
 		// redirect: "follow",
 		// referrerPolicy: "no-referrer",
-		body: JSON.stringify({ type, tofrom, details, amount, timeStamp }),
+		body: JSON.stringify({
+			type: type.value,
+			tofrom: tofrom.value,
+			details: details.value,
+			amount: amount.value,
+			timeStamp,
+		}),
 	});
 	const result = await resultJSON.json();
 
@@ -74,13 +73,17 @@ form.addEventListener("submit", async (e: Event) => {
 
 	if (result.ok) {
 		addTransaction(
-			type,
-			tofrom,
-			details,
-			amount,
+			type.value,
+			tofrom.value,
+			details.value,
+			amount.valueAsNumber,
 			timeStamp,
 			result.myPartitionKey
 		);
+		// clear form
+		tofrom.value = "";
+		details.value = "";
+		amount.value = "";
 	}
 });
 

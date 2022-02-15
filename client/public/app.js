@@ -27,10 +27,10 @@ function getTransactions() {
 getTransactions();
 form.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, function* () {
     e.preventDefault();
-    const { value: type } = document.querySelector("#type");
-    const { value: tofrom } = document.querySelector("#tofrom");
-    const { value: details } = document.querySelector("#details");
-    const { valueAsNumber: amount } = document.querySelector("#amount");
+    const type = document.querySelector("#type");
+    const tofrom = document.querySelector("#tofrom");
+    const details = document.querySelector("#details");
+    const amount = document.querySelector("#amount");
     const timeStamp = new Date().toISOString();
     const resultJSON = yield fetch("/api/v1", {
         method: "POST",
@@ -42,13 +42,23 @@ form.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, functio
         },
         // redirect: "follow",
         // referrerPolicy: "no-referrer",
-        body: JSON.stringify({ type, tofrom, details, amount, timeStamp }),
+        body: JSON.stringify({
+            type: type.value,
+            tofrom: tofrom.value,
+            details: details.value,
+            amount: amount.value,
+            timeStamp,
+        }),
     });
     const result = yield resultJSON.json();
     const messageDiv = document.querySelector("#message");
     messageDiv.innerText = result.message;
     if (result.ok) {
-        addTransaction(type, tofrom, details, amount, timeStamp, result.myPartitionKey);
+        addTransaction(type.value, tofrom.value, details.value, amount.valueAsNumber, timeStamp, result.myPartitionKey);
+        // clear form
+        tofrom.value = "";
+        details.value = "";
+        amount.value = "";
     }
 }));
 function addTransaction(type, tofrom, details, amount, timeStamp, myPartitionKey) {
