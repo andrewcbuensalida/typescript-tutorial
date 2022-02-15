@@ -19,8 +19,23 @@ app.get("/api/v1", (req, res) => {
 	console.log(`fetching transactions`);
 	const params = {
 		TableName: "transactions",
+		IndexName: "type-timeStamp-index",
+		// use this if using query instead of scan
+		// KeyConditionExpression: "#type = :type",
+		// ExpressionAttributeValues: {
+		// 	":type": "invoice",
+		// },
+		// ExpressionAttributeNames: { "#type": "type" },
+		FilterExpression: "#type=:type",
+		ExpressionAttributeNames: { "#type": "type" },
+		ExpressionAttributeValues: {
+			":type": "payment",
+		},
+		// ProjectionExpression: "timeStamp, type",
+		ScanIndexForward: false,
 	};
 
+	// use query when looking for specific transactions, because it requires a partition key, which is the myPartitionKey which is unique to each transaction
 	docClient.scan(params, function (err, data) {
 		if (err) {
 			console.error(
@@ -91,7 +106,7 @@ app.put("/api/v1", (req, res) => {
 			res.status(400).json({ ok: false });
 		} else {
 			console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
-			res.status(200).json({ ok: true, item:data.Attributes });
+			res.status(200).json({ ok: true, item: data.Attributes });
 		}
 	});
 });
