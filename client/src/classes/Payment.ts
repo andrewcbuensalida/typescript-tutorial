@@ -5,7 +5,8 @@ export class Payment implements HasFormatter {
 		readonly recipient: string,
 		private details: string,
 		public amount: number,
-		public timeStamp: string
+		public timeStamp: string,
+		public myPartitionKey:string
 	) {}
 	format(): string {
 		return `${this.recipient} paid $${this.amount} for ${this.details}`;

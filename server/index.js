@@ -44,7 +44,11 @@ app.post("/api/v1", async (req, res) => {
 
 	try {
 		await client.send(command);
-		res.status(200).json({ ok: true, message: "Transaction saved!" });
+		res.status(200).json({
+			ok: true,
+			message: "Transaction saved!",
+			myPartitionKey,
+		});
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({ ok: false, message: "Transaction failed!" });

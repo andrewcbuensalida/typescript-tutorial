@@ -9,7 +9,7 @@ export class ListTemplate {
 		const li = document.createElement("li");
 		li.addEventListener("click", () => {
 			//modal to see transaction bigger
-			console.log(`hello`);
+			console.log(`Transaction clicked`);
 		});
 		li.classList.add("transaction");
 		const top = document.createElement("div");
@@ -40,8 +40,12 @@ export class ListTemplate {
 			// e.stopPropagation();
 			const saveUpdateBtn = document.querySelector(
 				"#saveUpdate"
-			) as HTMLButtonElement;	saveUpdateBtn.innerText = "Save changes";
-
+			) as HTMLButtonElement;
+			saveUpdateBtn.innerText = "Save changes";
+			saveUpdateBtn.setAttribute(
+				"data-mypartitionkey",
+				item.myPartitionKey
+			);
 			const modalTitle = document.getElementById(
 				"exampleModalLongTitle"
 			) as HTMLHeadingElement;

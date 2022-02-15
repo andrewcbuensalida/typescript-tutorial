@@ -19,8 +19,8 @@ function getTransactions() {
         const resultJSON = yield fetch("/api/v1");
         const { transactions } = yield resultJSON.json();
         transactions.forEach((transaction) => {
-            const { type, tofrom, details, amount, timeStamp } = transaction;
-            addTransaction(type.S, tofrom.S, details.S, amount.N, timeStamp.S);
+            const { type, tofrom, details, amount, timeStamp, myPartitionKey } = transaction;
+            addTransaction(type.S, tofrom.S, details.S, amount.N, timeStamp.S, myPartitionKey.S);
         });
     });
 }
@@ -45,30 +45,42 @@ form.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, functio
         body: JSON.stringify({ type, tofrom, details, amount, timeStamp }),
     });
     const result = yield resultJSON.json();
-    console.log(`This is result`);
-    console.log(result);
     const messageDiv = document.querySelector("#message");
     messageDiv.innerText = result.message;
     if (result.ok) {
-        addTransaction(type, tofrom, details, amount, timeStamp);
+        addTransaction(type, tofrom, details, amount, timeStamp, result.myPartitionKey);
     }
 }));
-function addTransaction(type, tofrom, details, amount, timeStamp) {
+function addTransaction(type, tofrom, details, amount, timeStamp, myPartitionKey) {
     if (type === "invoice") {
-        const invoice = new Invoice(tofrom, details, amount, timeStamp);
+        const invoice = new Invoice(tofrom, details, amount, timeStamp, myPartitionKey);
         list.render(invoice, type, "end");
     }
     else {
-        const payment = new Payment(tofrom, details, amount, timeStamp);
+        const payment = new Payment(tofrom, details, amount, timeStamp, myPartitionKey);
         list.render(payment, type, "end");
     }
 }
 const saveUpdateBtn = document.querySelector("#saveUpdate");
-saveUpdateBtn.addEventListener("click", () => {
+saveUpdateBtn.addEventListener("click", () => __awaiter(void 0, void 0, void 0, function* () {
     saveUpdateBtn.innerText = "Saving...";
     const descriptionArea = document.querySelector("textarea");
     const description = descriptionArea.value;
-    console.log(description);
+    const responseJSON = yield fetch("/api/v1", {
+        method: "PUT",
+        // mode: "cors", // no-cors, *cors, same-origin
+        // cache: "no-cache",
+        // credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        // redirect: "follow",
+        // referrerPolicy: "no-referrer",
+        body: JSON.stringify({
+            description,
+            myPartitionKey: saveUpdateBtn.getAttribute("data-mypartitionkey"),
+        }),
+    });
     //if successfully updated
     if (true) {
         saveUpdateBtn.innerText = "Changes saved!";
@@ -76,4 +88,4 @@ saveUpdateBtn.addEventListener("click", () => {
     else {
         saveUpdateBtn.innerText = "Try again";
     }
-});
+}));
