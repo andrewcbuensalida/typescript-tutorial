@@ -69,5 +69,11 @@ saveUpdateBtn.addEventListener("click", () => {
     const descriptionArea = document.querySelector("textarea");
     const description = descriptionArea.value;
     console.log(description);
-    saveUpdateBtn.innerText = "Save changes";
+    //if successfully updated
+    if (true) {
+        saveUpdateBtn.innerText = "Changes saved!";
+    }
+    else {
+        saveUpdateBtn.innerText = "Try again";
+    }
 });

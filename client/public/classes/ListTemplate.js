@@ -34,7 +34,8 @@ export class ListTemplate {
         updateBtn.setAttribute("data-target", "#exampleModalCenter");
         updateBtn.addEventListener("click", (e) => {
             // e.stopPropagation();
-            // modal to update description
+            const saveUpdateBtn = document.querySelector("#saveUpdate");
+            saveUpdateBtn.innerText = "Save changes";
             const modalTitle = document.getElementById("exampleModalLongTitle");
             modalTitle.innerText = "Update";
             const descriptionArea = document.createElement("textarea");

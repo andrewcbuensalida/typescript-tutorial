@@ -38,7 +38,10 @@ export class ListTemplate {
 
 		updateBtn.addEventListener("click", (e) => {
 			// e.stopPropagation();
-			// modal to update description
+			const saveUpdateBtn = document.querySelector(
+				"#saveUpdate"
+			) as HTMLButtonElement;	saveUpdateBtn.innerText = "Save changes";
+
 			const modalTitle = document.getElementById(
 				"exampleModalLongTitle"
 			) as HTMLHeadingElement;
