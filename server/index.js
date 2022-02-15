@@ -15,7 +15,7 @@ app.use(express.static("../client/public"));
 // needed so req.body wont be undefined
 app.use(express.json());
 
-app.get("/api/v1", async (req, res) => {
+app.get("/api/v1", (req, res) => {
 	console.log(`fetching transactions`);
 	const params = {
 		TableName: "transactions",
@@ -32,38 +32,40 @@ app.get("/api/v1", async (req, res) => {
 			res.status(200).json({ transactions: data.Items });
 		}
 	});
-
-	// const command = new ScanCommand(params);
-	// const transactions = await client.send(command);
 });
 
-app.post("/api/v1", async (req, res) => {
+app.post("/api/v1", (req, res) => {
 	const myPartitionKey = uuidv4.v4();
 
 	var params = {
 		TableName: "transactions",
 		Item: {
-			myPartitionKey: { S: myPartitionKey },
-			type: { S: req.body.type },
-			tofrom: { S: req.body.tofrom },
-			details: { S: req.body.details },
-			amount: { N: req.body.amount.toString() },
-			timeStamp: { S: req.body.timeStamp },
+			myPartitionKey: myPartitionKey,
+			type: req.body.type,
+			tofrom: req.body.tofrom,
+			details: req.body.details,
+			amount: req.body.amount.toString(),
+			timeStamp: req.body.timeStamp,
 		},
 	};
-	const command = new PutItemCommand(params);
 
-	try {
-		await client.send(command);
-		res.status(200).json({
-			ok: true,
-			message: "Transaction saved!",
-			myPartitionKey,
-		});
-	} catch (err) {
-		console.error(err);
-		res.status(400).json({ ok: false, message: "Transaction failed!" });
-	}
+	console.log("Adding a new item...");
+	docClient.put(params, function (err, data) {
+		if (err) {
+			console.error(
+				"Unable to add item. Error JSON:",
+				JSON.stringify(err, null, 2)
+			);
+			res.status(400).json({ ok: false, message: "Transaction failed!" });
+		} else {
+			console.log("Added item:", JSON.stringify(data, null, 2));
+			res.status(200).json({
+				ok: true,
+				message: "Transaction saved!",
+				myPartitionKey,
+			});
+		}
+	});
 });
 
 app.put("/api/v1", async (req, res) => {
