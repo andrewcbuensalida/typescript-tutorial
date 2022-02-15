@@ -73,6 +73,7 @@ app.post("/api/v1", (req, res) => {
 			details: req.body.details,
 			amount: req.body.amount.toString(),
 			timeStamp: req.body.timeStamp,
+			table:'transactions'
 		},
 	};
 

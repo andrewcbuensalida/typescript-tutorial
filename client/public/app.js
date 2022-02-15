@@ -17,7 +17,6 @@ function emptyTransactions() {
     console.log(`Emptying transactions`);
     const ul = document.querySelector(".item-list");
     while (ul.firstChild) {
-        console.log(`heyooo`);
         ul.removeChild(ul.lastChild);
     }
 }
