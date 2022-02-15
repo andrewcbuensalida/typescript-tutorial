@@ -4,6 +4,7 @@ const {
 	DynamoDBClient,
 	ScanCommand,
 	PutItemCommand,
+	UpdateItemCommand,
 } = require("@aws-sdk/client-dynamodb");
 
 const client = new DynamoDBClient({ region: "us-west-1" });
@@ -52,6 +53,30 @@ app.post("/api/v1", async (req, res) => {
 	} catch (err) {
 		console.error(err);
 		res.status(400).json({ ok: false, message: "Transaction failed!" });
+	}
+});
+
+app.put("/api/v1", async (req, res) => {
+	console.log(`This is req.body`);
+	console.log(req.body);
+
+	const params = {
+		TableName: "transactions",
+		Key: {
+			myPartitionKey: { S: req.body.myPartitionKey },
+		},
+		UpdateExpression: "set details = :d",
+		ExpressionAttributeValues: {
+			":d": req.body.details,
+		},
+	};
+	const command = new UpdateItemCommand(params);
+	try {
+		const responseJSON = await client.send(command);
+		res.status(200).json({ ok: true });
+	} catch (err) {
+		console.log(err);
+		res.status(400).json({ ok: false });
 	}
 });
 

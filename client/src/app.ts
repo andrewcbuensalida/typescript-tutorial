@@ -118,10 +118,10 @@ const saveUpdateBtn = document.querySelector(
 
 saveUpdateBtn.addEventListener("click", async () => {
 	saveUpdateBtn.innerText = "Saving...";
-	const descriptionArea = document.querySelector(
+	const detailsArea = document.querySelector(
 		"textarea"
 	) as HTMLTextAreaElement;
-	const description = descriptionArea.value;
+	const details = detailsArea.value;
 	const responseJSON = await fetch("/api/v1", {
 		method: "PUT",
 		// mode: "cors", // no-cors, *cors, same-origin
@@ -133,7 +133,7 @@ saveUpdateBtn.addEventListener("click", async () => {
 		// redirect: "follow",
 		// referrerPolicy: "no-referrer",
 		body: JSON.stringify({
-			description,
+			details,
 			myPartitionKey: saveUpdateBtn.getAttribute("data-mypartitionkey"),
 		}),
 	});

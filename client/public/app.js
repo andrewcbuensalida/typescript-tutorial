@@ -64,8 +64,8 @@ function addTransaction(type, tofrom, details, amount, timeStamp, myPartitionKey
 const saveUpdateBtn = document.querySelector("#saveUpdate");
 saveUpdateBtn.addEventListener("click", () => __awaiter(void 0, void 0, void 0, function* () {
     saveUpdateBtn.innerText = "Saving...";
-    const descriptionArea = document.querySelector("textarea");
-    const description = descriptionArea.value;
+    const detailsArea = document.querySelector("textarea");
+    const details = detailsArea.value;
     const responseJSON = yield fetch("/api/v1", {
         method: "PUT",
         // mode: "cors", // no-cors, *cors, same-origin
@@ -77,7 +77,7 @@ saveUpdateBtn.addEventListener("click", () => __awaiter(void 0, void 0, void 0, 
         // redirect: "follow",
         // referrerPolicy: "no-referrer",
         body: JSON.stringify({
-            description,
+            details,
             myPartitionKey: saveUpdateBtn.getAttribute("data-mypartitionkey"),
         }),
     });
