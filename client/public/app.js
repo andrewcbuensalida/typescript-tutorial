@@ -115,3 +115,12 @@ saveUpdateBtn.addEventListener("click", () => __awaiter(void 0, void 0, void 0, 
         saveUpdateBtn.innerText = "Try again";
     }
 }));
+const typeFilter = document.querySelector("#typeFilter");
+typeFilter.addEventListener("change", () => {
+    if (typeFilter.value === "all") {
+    }
+    else if (typeFilter.value === "invoice") {
+    }
+    else if (typeFilter.value === "invoice") {
+    }
+});

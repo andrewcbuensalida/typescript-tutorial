@@ -20,17 +20,21 @@ app.get("/api/v1", (req, res) => {
 	const params = {
 		TableName: "transactions",
 		IndexName: "type-timeStamp-index",
-		// use this if using query instead of scan
+
+		// use this if using query instead of scan, this is required
 		// KeyConditionExpression: "#type = :type",
 		// ExpressionAttributeValues: {
 		// 	":type": "invoice",
 		// },
 		// ExpressionAttributeNames: { "#type": "type" },
-		FilterExpression: "#type=:type",
-		ExpressionAttributeNames: { "#type": "type" },
-		ExpressionAttributeValues: {
-			":type": "payment",
-		},
+
+		// use this if using scan
+		// FilterExpression: "#type=:type",
+		// ExpressionAttributeNames: { "#type": "type" },
+		// ExpressionAttributeValues: {
+		// 	":type": "payment",
+		// },
+		
 		// ProjectionExpression: "timeStamp, type",
 		ScanIndexForward: false,
 	};
