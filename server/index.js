@@ -16,9 +16,6 @@ app.use(express.static("../client/public"));
 app.use(express.json());
 
 app.get("/api/v1/:type", (req, res) => {
-	console.log(`This is req.params`);
-	console.log(req.params);
-
 	console.log(`fetching transactions`);
 	let params;
 	if (req.params.type === "all") {
@@ -31,6 +28,7 @@ app.get("/api/v1/:type", (req, res) => {
 				":table": "transactions",
 			},
 			ScanIndexForward: true,
+			// Limit:3
 		};
 	} else {
 		params = {
