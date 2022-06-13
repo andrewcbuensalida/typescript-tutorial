@@ -71,7 +71,7 @@ app.post("/api/v1", (req, res) => {
 			details: req.body.details,
 			amount: req.body.amount.toString(),
 			timeStamp: req.body.timeStamp,
-			table:'transactions'
+			table: "transactions",
 		},
 	};
 
@@ -142,6 +142,14 @@ app.delete("/api/v1", (req, res) => {
 			res.status(200).json({ ok: true });
 		}
 	});
+});
+
+const footerCompanyName = Math.random() > 0.5 ? "Crypto " : "NFT ";
+const footerCompanyType = Math.random() > 0.5 ? "Corp" : "Inc";
+app.get("/getFooterCompany", (req, res) => {
+    console.log(`This is in /getFooterCompany`)
+    
+	res.json({ footerCompanyName, footerCompanyType });
 });
 
 app.listen(PORT, () => console.log(`Listening to port ${PORT}`));

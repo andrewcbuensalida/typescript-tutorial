@@ -185,7 +185,13 @@ typeFilter.addEventListener("change", () => {
 });
 
 //Testing if pm2 load balancer works
-const footerCompanyNameElement = document.getElementById('footerCompanyName') as HTMLAnchorElement
-const footerCompanyName = Math.random() > .5 ? 'Crypto ' : 'NFT '
-const footerCompanyType = Math.random() > 0.5 ? "Corp" : "Inc";
-footerCompanyNameElement.innerText=footerCompanyName+footerCompanyType
+async function getFooterCompany() {
+	const footerCompanyElement = document.getElementById(
+		"footerCompany"
+	) as HTMLAnchorElement;
+	const footerCompanyJSON = await fetch("/getFooterCompany");
+	const { footerCompanyName, footerCompanyType } =
+		await footerCompanyJSON.json();
+	footerCompanyElement.innerText = footerCompanyName + footerCompanyType;
+}
+getFooterCompany();

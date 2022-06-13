@@ -129,7 +129,12 @@ typeFilter.addEventListener("change", () => {
     getTransactions(typeFilter.value);
 });
 //Testing if pm2 load balancer works
-const footerCompanyNameElement = document.getElementById('footerCompanyName');
-const footerCompanyName = Math.random() > .5 ? 'Crypto ' : 'NFT ';
-const footerCompanyType = Math.random() > 0.5 ? "Corp" : "Inc";
-footerCompanyNameElement.innerText = footerCompanyName + footerCompanyType;
+function getFooterCompany() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const footerCompanyElement = document.getElementById("footerCompany");
+        const footerCompanyJSON = yield fetch("/getFooterCompany");
+        const { footerCompanyName, footerCompanyType } = yield footerCompanyJSON.json();
+        footerCompanyElement.innerText = footerCompanyName + footerCompanyType;
+    });
+}
+getFooterCompany();
