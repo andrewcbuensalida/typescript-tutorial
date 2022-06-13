@@ -183,3 +183,9 @@ const typeFilter = document.querySelector("#typeFilter") as HTMLSelectElement;
 typeFilter.addEventListener("change", () => {
 	getTransactions(typeFilter.value);
 });
+
+//Testing if pm2 load balancer works
+const footerCompanyNameElement = document.getElementById('footerCompanyName') as HTMLAnchorElement
+const footerCompanyName = Math.random() > .5 ? 'Crypto ' : 'NFT '
+const footerCompanyType = Math.random() > 0.5 ? "Corp" : "Inc";
+footerCompanyNameElement.innerText=footerCompanyName+footerCompanyType
