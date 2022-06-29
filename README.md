@@ -19,7 +19,13 @@ Then input, this info is saved in a file in swe folder:
 
 dynamodb is stupid because you cant even sort a query unless you supply a partition key, which is an attribute you want to filter. actually, if you just set the partition key for the index as the table name, youll be able to sort.
 
+So express server in ec2 instance doesn't have to go into the public internet when querying dynamodb, follow this https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/images/ddb-yes-vpc-endpoint.png
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/vpc-endpoints-dynamodb.html
+This creates a vpc endpoint so traffic stays within vpc. Can either use vpc console > create end point, or via cli. Local machine can still access dynamodb unless you close it off in the policy of the vpc endpoint. https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-ddb.html
 
+
+
+//////////////////////////////////////
 deploying ========================================================================
 aws route 53, hosted zone anhonestobserver.com
 create record crypto.anhonestobserver.com A record with value 50.18.72.90 which i got from compute engine up address

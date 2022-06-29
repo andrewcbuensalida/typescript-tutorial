@@ -21,10 +21,14 @@ app.get("/api/v1/:type", (req, res) => {
 	if (req.params.type === "all") {
 		params = {
 			TableName: "transactions",
+            // this is global secondary index. it has a partition key = "table" and a sort key = "timeStamp"
 			IndexName: "table-timeStamp-index",
+            // since table is a reserved word, put #. #table refers to a key aka field. if a record has a table = transactions, it will be included. I think this is just to allow for sorting?
 			KeyConditionExpression: "#table = :table",
+            // table replaces #table above (in KeyConditionExpression).
 			ExpressionAttributeNames: { "#table": "table" },
 			ExpressionAttributeValues: {
+                // this plugs transactions into above KeyConditionExpression :table
 				":table": "transactions",
 			},
 			ScanIndexForward: true,
@@ -45,7 +49,7 @@ app.get("/api/v1/:type", (req, res) => {
 		};
 	}
 
-	// use query when looking for specific transactions, because it requires a partition key, which is the myPartitionKey which is unique to each transaction
+	// use query when looking for specific transactions, because it requires a partition key, which is the myPartitionKey which is unique to each transaction. use getItem if it's just one item. 
 	docClient.query(params, function (err, data) {
 		if (err) {
 			console.error(
@@ -65,6 +69,7 @@ app.post("/api/v1", (req, res) => {
 	var params = {
 		TableName: "transactions",
 		Item: {
+            //This is the partition key
 			myPartitionKey: myPartitionKey,
 			type: req.body.type,
 			tofrom: req.body.tofrom,
